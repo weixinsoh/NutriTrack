@@ -79,7 +79,7 @@ fun HomeScreen(name: String = "Rosie", modifier: Modifier = Modifier) {
         ) {
             Text("Hello,", fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = Color.Gray)
 
-            Text(name, fontSize = 40.sp, fontWeight = FontWeight.ExtraBold)
+            Text(name, fontSize = 36.sp, fontWeight = FontWeight.ExtraBold)
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -103,12 +103,17 @@ fun HomeScreen(name: String = "Rosie", modifier: Modifier = Modifier) {
                     Text("Edit")
                 }
             }
+
+            Spacer(modifier = Modifier.height(10.dp))
             
             Image(
-                painter = painterResource(id = R.drawable.nutri_track_logo),
+                painter = painterResource(id = R.drawable.meal_plate),
                 contentDescription = "Nutrition",
-                modifier = Modifier.size(250.dp)
+                modifier = Modifier.fillMaxWidth().height(250.dp),
+                alignment = Alignment.TopCenter
             )
+
+            Spacer(modifier = Modifier.height(10.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -168,7 +173,7 @@ fun HomeScreen(name: String = "Rosie", modifier: Modifier = Modifier) {
                     "This personalized measurement considers various food groups including vegetables, " +
                     "fruits whole grains, and proteins tp give you practical insights for making " +
                     "healthier food choices. ",
-                textAlign = TextAlign.Justify)
+                textAlign = TextAlign.Justify, fontSize = 14.sp)
         }
     }
 

@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
@@ -40,6 +41,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -50,12 +52,28 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.Soh_33351597.nutritrack.ui.theme.NutriTrackTheme
 
-private const val idStatic: String = "id"
-private const val phoneStatic: String = "phoneNum"
+private const val idStatic: String = "012345"
+private const val phoneStatic: String = "1245"
+
+class LoginScreen : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            NutriTrackTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    LoginScreen(
+                        modifier = Modifier.padding(innerPadding)
+                    )
+                }
+            }
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(onDismiss: () -> Unit) {
+fun LoginScreen(modifier: Modifier = Modifier) {
     var selectedId by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
     var isDropdownExpanded by remember { mutableStateOf(false) }
@@ -63,79 +81,96 @@ fun LoginScreen(onDismiss: () -> Unit) {
     val idOptions = listOf("012345")
     val context = LocalContext.current
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ){
-        Text("Log in", textAlign = TextAlign.Center, fontSize = 24.sp, fontWeight = FontWeight.ExtraBold)
 
-        Spacer(modifier = Modifier.height(24.dp))
+    Surface(
+        modifier = modifier.fillMaxSize(),
+        color = MaterialTheme.colorScheme.background
+    ) {
 
-        ExposedDropdownMenuBox(
-            expanded = isDropdownExpanded,
-            onExpandedChange = { isDropdownExpanded = it }
+        Column(
+            modifier = Modifier.fillMaxSize().padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Top
         ) {
-            OutlinedTextField(
-                value = selectedId,
-                onValueChange = { selectedId = it },
-                readOnly = true,
-                label = { Text(text = "My ID (Provided by your Clinician)") },
-                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
-                modifier = Modifier.fillMaxWidth()
-                    .menuAnchor(MenuAnchorType.PrimaryNotEditable)
-                    .clickable { isDropdownExpanded = true }
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Text(
+                "Log in",
+                textAlign = TextAlign.Center,
+                fontSize = 24.sp,
+                fontWeight = FontWeight.ExtraBold
             )
 
-            ExposedDropdownMenu(
+            Spacer(modifier = Modifier.height(24.dp))
+
+            ExposedDropdownMenuBox(
                 expanded = isDropdownExpanded,
-                onDismissRequest = { isDropdownExpanded = false }
+                onExpandedChange = { isDropdownExpanded = it }
             ) {
-                idOptions.forEach { id ->
-                    DropdownMenuItem(
-                        text = { Text(id) },
-                        onClick = {
-                            selectedId = id
-                            isDropdownExpanded = false
-                        }
-                    )
+                OutlinedTextField(
+                    value = selectedId,
+                    onValueChange = { selectedId = it },
+                    readOnly = true,
+                    label = { Text(text = "My ID (Provided by your Clinician)", fontWeight = FontWeight.ExtraBold) },
+                    textStyle = TextStyle(fontSize = 18.sp),
+                    trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = isDropdownExpanded) },
+                    modifier = Modifier.fillMaxWidth()
+                        .menuAnchor(MenuAnchorType.PrimaryNotEditable)
+                        .clickable { isDropdownExpanded = true }
+                )
+
+                ExposedDropdownMenu(
+                    expanded = isDropdownExpanded,
+                    onDismissRequest = { isDropdownExpanded = false }
+                ) {
+                    idOptions.forEach { id ->
+                        DropdownMenuItem(
+                            text = { Text(id) },
+                            onClick = {
+                                selectedId = id
+                                isDropdownExpanded = false
+                            }
+                        )
+                    }
                 }
             }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OutlinedTextField(
+                value = phoneNumber,
+                onValueChange = { phoneNumber = it },
+                label = { Text(text = "Phone number", fontWeight = FontWeight.ExtraBold) },
+                textStyle = TextStyle(fontSize = 18.sp),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                modifier = Modifier.fillMaxWidth(),
+                placeholder = { Text("Enter your number") }
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text("This app is only for pre-registered users. Please have your ID and phone " +
+                    "number handy before continuing.", fontSize = 11.sp)
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    if (selectedId == idStatic && phoneNumber == phoneStatic) {
+                        Toast.makeText(context, "Login Successful", Toast.LENGTH_LONG).show()
+                        context.startActivity(Intent(context, FoodIntakeQuestionnaire::class.java))
+                    } else {
+                        Toast.makeText(context, "Incorrect Credentials", Toast.LENGTH_LONG).show()
+                    }
+                },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(5.dp),
+            ) {
+                Text("Continue")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
         }
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        OutlinedTextField(
-            value = phoneNumber,
-            onValueChange = { phoneNumber = it },
-            label = { Text(text = "Phone number") },
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-            modifier = Modifier.fillMaxWidth(),
-            placeholder = { Text("Enter your number") }
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Text("This app is only for pre-registered users. Please have your ID and phone number handy before continuing.")
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        Button(
-            onClick = {
-                if (selectedId == idStatic && phoneNumber == phoneStatic) {
-                    onDismiss()
-                    Toast.makeText(context, "Login Successful", Toast.LENGTH_LONG).show()
-                    val intent = Intent(context, FoodIntakeQuestionnaire::class.java)
-                } else {
-                    Toast.makeText(context, "Incorrect Credentials", Toast.LENGTH_LONG).show()
-                }
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Continue")
-        }
-
-        Spacer(modifier = Modifier.height(16.dp))
     }
 }
 

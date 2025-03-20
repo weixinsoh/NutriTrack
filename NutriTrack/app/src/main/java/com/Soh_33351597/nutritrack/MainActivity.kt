@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
@@ -47,6 +48,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.Soh_33351597.nutritrack.ui.theme.NutriTrackTheme
 
 class MainActivity : ComponentActivity() {
@@ -67,22 +69,21 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun WelcomeScreen(modifier: Modifier = Modifier) {
-    val sheetState = rememberModalBottomSheetState()
-    var showSheet by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     Surface(
         modifier = modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
         Column(
-            modifier = Modifier.fillMaxSize().padding(16.dp),
+            modifier = Modifier.fillMaxSize().padding(50.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
             Image(
                 painter = painterResource(id = R.drawable.nutri_track_logo),
                 contentDescription = "Nutri Track Logo",
-                modifier = Modifier.width(400.dp).height(250.dp)
+                modifier = Modifier.size(250.dp)
             )
 
             Text("This app provides general health and nutrition information for " +
@@ -94,24 +95,16 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
                     "visit the Monash Nutrition/Dietetics Clinic (discounted rates for " +
                     "students):\n" +
                     "https://www.monash.edu/medicine/scs/nutrition/clinics/nutrition",
-                textAlign = TextAlign.Center, fontStyle = FontStyle.Italic)
+                textAlign = TextAlign.Center, fontStyle = FontStyle.Italic, fontSize = 11.sp)
 
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { showSheet = true },
-                modifier = Modifier.fillMaxWidth()
-            ) {
+                onClick = { context.startActivity(Intent(context, LoginScreen::class.java)) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(5.dp),
+                ) {
                 Text("Login")
-            }
-        }
-
-        if (showSheet) {
-            ModalBottomSheet(
-                onDismissRequest = { showSheet = false },
-                sheetState = sheetState
-            ) {
-                LoginScreen { showSheet = false }
             }
         }
 
@@ -120,7 +113,7 @@ fun WelcomeScreen(modifier: Modifier = Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Bottom
         ) {
-            Text("Designed by Wei Xin Soh (33351597)", textAlign = TextAlign.Center)
+            Text("Designed by Wei Xin Soh (33351597)", textAlign = TextAlign.Center, fontSize = 12.sp)
         }
     }
 }
